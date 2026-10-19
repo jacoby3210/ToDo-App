@@ -1,7 +1,7 @@
 include .env
 export
 
-export PROJECT_ROOT := $(shell cygpath -m "$(CURDIR)")
+export PROJECT_ROOT := $(shell cygpath -m "$(CURDIR)" 2>/dev/null || echo "$(CURDIR)")
 
 ## Environments
 
