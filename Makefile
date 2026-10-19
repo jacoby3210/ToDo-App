@@ -1,7 +1,7 @@
 include .env
 export
 
-export PROJECT_ROOT := $(shell pwd)
+export PROJECT_ROOT := $(shell cygpath -m "$(CURDIR)")
 
 ## Environments
 
@@ -17,3 +17,17 @@ env-down:      ## Остановить окружение
 
 env-up:        ## Запустить окружение
 	@docker compose up -d todoapp-postgres
+
+## Migrations
+
+migrate-create:   ## Создать новую версию схемы
+	@if [ -z "$(seq)" ]; then \
+		echo "Необходимо указать номер версии миграции через seq!"; \
+		exit 1; \
+	fi
+	@echo "PROJECT_ROOT=$(PROJECT_ROOT)"
+	@docker compose run --rm todoapp-postgres-migrate \
+		create \
+		-ext sql \
+		-dir ./migrations \
+		-seq "$(seq)"
