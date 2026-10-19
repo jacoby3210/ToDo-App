@@ -18,6 +18,14 @@ env-down:      ## Остановить окружение
 env-up:        ## Запустить окружение
 	@docker compose up -d todoapp-postgres
 
+## Environment port forwarding
+
+env-port-forward:   ## Открыть порт к базе
+	@docker compose up -d port-forwarder
+
+env-port-close:     ## Закрыть порт
+	@docker compose down port-forwarder
+
 ## Migrations
 
 migrate-create:   ## Создать новую версию схемы
