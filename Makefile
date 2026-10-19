@@ -13,7 +13,7 @@ env-cleanup:   ## Удалить данные окружения (volume)
 	fi
 
 env-down:      ## Остановить окружение
-	@docker compose down todoapp-postgres
+	@docker compose down todoapp-postgres port-forwarder
 
 env-up:        ## Запустить окружение
 	@docker compose up -d todoapp-postgres
@@ -56,3 +56,4 @@ migrate-down:	 ## Откатить миграцию
 
 migrate-up:	 ## Применить миграцию
 	@make migrate-action action=up
+	
