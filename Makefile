@@ -16,7 +16,7 @@ env-down:      ## Остановить окружение
 	@docker compose down todoapp-postgres port-forwarder
 
 env-up:        ## Запустить окружение
-	@docker compose up -d todoapp-postgres
+	@docker compose up -d todoapp-postgres port-forwarder
 
 ## Environment port forwarding
 
@@ -57,3 +57,9 @@ migrate-down:	 ## Откатить миграцию
 migrate-up:	 ## Применить миграцию
 	@make migrate-action action=up
 	
+todoapp-run:	 ## Запустить 
+	export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	export POSTGRES_HOST=localhost && \
+	go mod tidy && \
+	go run cmd/main.go
+
