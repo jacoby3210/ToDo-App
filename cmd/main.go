@@ -13,6 +13,10 @@ import (
 	core_postgres_pool "github.com/jacoby3210/ToDo-App/internal/core/repository/postgres/pool"
 	core_http_middleware "github.com/jacoby3210/ToDo-App/internal/core/transport/http/middleware"
 	core_http_server "github.com/jacoby3210/ToDo-App/internal/core/transport/http/server"
+
+	users_postgres_repository "github.com/jacoby3210/ToDo-App/internal/features/users/repository/postgres"
+	users_service "github.com/jacoby3210/ToDo-App/internal/features/users/service"
+	users_transport_http "github.com/jacoby3210/ToDo-App/internal/features/users/transport/http"
 )
 
 func main() {
@@ -31,11 +35,14 @@ func main() {
 	if err!=nil {logger.Fatal("failed to create connection pool", zap.Error(err))}
 	defer pool.Close()
 
+	logger.Debug("initializing feature", zap.String("feature", "users"))
+	usersRepository := users_postgres_repository.NewUsersRepository(pool)
+	usersService := users_service.NewUsersService(usersRepository)
+	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersService)
 
 	logger.Debug("initializing HTTP server")
-
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
-	apiVersionRouter.RegisterRoutes()
+	apiVersionRouter.RegisterRoutes(usersTransportHTTP.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(), 
